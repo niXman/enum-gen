@@ -70,11 +70,15 @@ void test_cast_to_char() {
 }
 
 void test_cast_from_char() {
-   assert(myenum1::member2 == enum_cast<myenum1>("myenum1::member2"));
-   assert(myenum2::member5 == enum_cast<myenum2>("myenum2::member5"));
-   assert(myenum3::member8 == enum_cast<myenum3>("myenum3::member8"));
-   assert(myenum4::member11 == enum_cast<myenum4>("myenum4::member11"));
-   std::cout << "test_cast_from_char() PASSED" << std::endl;
+	assert(myenum1::member2 == enum_cast<myenum1>("myenum1::member2"));
+	assert(myenum1::member2 == enum_cast<myenum1>("member2"));
+	assert(myenum2::member5 == enum_cast<myenum2>("myenum2::member5"));
+	assert(myenum2::member5 == enum_cast<myenum2>("member5"));
+	assert(myenum3::member8 == enum_cast<myenum3>("myenum3::member8"));
+	assert(myenum3::member8 == enum_cast<myenum3>("member8"));
+	assert(myenum4::member11 == enum_cast<myenum4>("myenum4::member11"));
+	assert(myenum4::member11 == enum_cast<myenum4>("member11"));
+	std::cout << "test_cast_from_char() PASSED" << std::endl;
 }
 
 /***************************************************************************/
