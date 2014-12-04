@@ -29,7 +29,7 @@ inline const char* enum_cast(const myenum1& e) {
       case myenum1::member2: return "myenum1::member2";
       case myenum1::member3: return "myenum1::member3";
    }
-   return "myenum1::unknown";
+   assert("bad enum value #1" == 0);
 }
 
 template <typename E>
@@ -58,7 +58,7 @@ myenum1 enum_cast<myenum1>(const char *str) {
          case 2: if (0 == std::strcmp(names[2], str)) return myenum1::member3;
       }
    }
-   assert("bad enum value" == 0);
+   assert("bad enum value #2" == 0);
 }
 
 std::ostream& operator<<(std::ostream& os, const myenum1& e) {

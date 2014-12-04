@@ -102,7 +102,7 @@
 				,seq \
 			) \
 		} \
-		return BOOST_PP_STRINGIZE(name::unknown); \
+		assert("bad enum value #1" == 0); \
 	} \
 	\
 	template<typename E> \
@@ -123,7 +123,7 @@
 				) \
 			} \
 		} \
-		assert("bad enum value" == 0); \
+		assert("bad enum value #2" == 0); \
 	} \
 	\
 	std::ostream& operator<< (std::ostream &os, const name &e) { \
