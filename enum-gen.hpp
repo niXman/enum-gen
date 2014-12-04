@@ -28,8 +28,8 @@
 	)
 
 #define ENUM_GEN_DECLARE_ENUM_WRITE_CASES(unused, data, idx, elem) \
-	case BOOST_PP_TUPLE_ELEM(0, data)::BOOST_PP_TUPLE_ELEM(0, elem): \
-		return BOOST_PP_STRINGIZE(BOOST_PP_TUPLE_ELEM(0, data)::BOOST_PP_TUPLE_ELEM(0, elem)) \
+	case data::BOOST_PP_TUPLE_ELEM(0, elem): \
+		return BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem)) \
 	;
 
 #define ENUM_GEN_DECLARE_ENUM_WRITE_CASES2(unused, data, idx, elem) \
@@ -98,7 +98,7 @@
 		switch ( e ) { \
 			BOOST_PP_SEQ_FOR_EACH_I( \
 				 ENUM_GEN_DECLARE_ENUM_WRITE_CASES \
-				,(name, seq) \
+				,name\
 				,seq \
 			) \
 		} \
