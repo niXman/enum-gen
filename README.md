@@ -73,6 +73,6 @@ inline constexpr myenum1 operator|(const myenum1& l, const myenum1& r) {
 }
 inline constexpr myenum1 operator^(const myenum1& l, const myenum1& r) {
    return static_cast<myenum1>(static_cast<std::uint8_t>(l) ^ static_cast<std::uint8_t>(r));
-};
+}
 
 ```
