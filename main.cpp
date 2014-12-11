@@ -66,7 +66,12 @@ void test_cast_to_char() {
    assert(0 == strcmp("myenum3::member8", enum_cast(myenum3::member8)));
    assert(0 == strcmp("myenum4::member11", enum_cast(myenum4::member11)));
 
-   std::cout << "test_cast_to_char() PASSED" << std::endl;
+	assert(0 == strcmp("member2", enum_cast(myenum1::member2, false)));
+	assert(0 == strcmp("member5", enum_cast(myenum2::member5, false)));
+	assert(0 == strcmp("member8", enum_cast(myenum3::member8, false)));
+	assert(0 == strcmp("member11", enum_cast(myenum4::member11, false)));
+
+	std::cout << "test_cast_to_char() PASSED" << std::endl;
 }
 
 void test_cast_from_char() {

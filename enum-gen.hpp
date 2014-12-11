@@ -29,7 +29,7 @@
 
 #define ENUM_GEN_DECLARE_ENUM_WRITE_CASES(unused, data, idx, elem) \
 	case data::BOOST_PP_TUPLE_ELEM(0, elem): \
-		return BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem)) \
+		return BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem))+offset \
 	;
 
 #define ENUM_GEN_DECLARE_ENUM_WRITE_CASES2(unused, data, idx, elem) \
@@ -83,7 +83,8 @@
 		) \
 	}; \
 	\
-	inline const char *enum_cast(const name &e) { \
+	inline const char *enum_cast(const name &e, const bool flag = true) { \
+		const std::size_t offset = (true == flag ? 0 : sizeof(BOOST_PP_STRINGIZE(name::))-1); \
 		switch ( e ) { \
 			BOOST_PP_SEQ_FOR_EACH_I( \
 				 ENUM_GEN_DECLARE_ENUM_WRITE_CASES \
@@ -101,7 +102,7 @@
 	name enum_cast<name>(const char *str) { \
 		ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES(name, seq) \
 		\
-		const std::size_t offset = (std::strchr(str, ':') != 0 ? 0 : (sizeof(BOOST_PP_STRINGIZE(name::))-1)); \
+		const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name::))-1); \
 		for ( std::size_t idx = 0; idx < BOOST_PP_SEQ_SIZE(seq); ++idx ) { \
 			switch ( idx ) { \
 				BOOST_PP_SEQ_FOR_EACH_I( \
