@@ -33,29 +33,18 @@
 	;
 
 #define ENUM_GEN_DECLARE_ENUM_WRITE_CASES2(unused, data, idx, elem) \
-	case idx: if ( 0 == std::strcmp(names[idx], str) ) return data::BOOST_PP_TUPLE_ELEM(0, elem);
+	case idx: if ( 0 == std::strcmp(members[idx]+offset, str) ) return data::BOOST_PP_TUPLE_ELEM(0, elem);
 
 /****************************************************************************/
 
 #define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX(unused, data, idx, elem) \
 	BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem)),
 
-#define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX2(unused, data, idx, elem) \
-	with_pref[idx]+preflen,
-
 #define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES(name, seq) \
-	static const char *with_pref[] = { \
+	static const char *members[] = { \
 	BOOST_PP_SEQ_FOR_EACH_I( \
 			 ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX \
 			,name \
-			,seq \
-		) \
-		0 \
-	}; \
-	static const char *without_pref[] = { \
-	BOOST_PP_SEQ_FOR_EACH_I( \
-			 ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX2 \
-			,name\
 			,seq \
 		) \
 		0 \
@@ -110,10 +99,9 @@
 	\
 	template<> \
 	name enum_cast<name>(const char *str) { \
-		static const std::size_t preflen = sizeof(BOOST_PP_STRINGIZE(name::))-1; \
 		ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES(name, seq) \
 		\
-		const char **names = (std::strchr(str, ':') != 0 ? with_pref : without_pref); \
+		const std::size_t offset = (std::strchr(str, ':') != 0 ? 0 : (sizeof(BOOST_PP_STRINGIZE(name::))-1)); \
 		for ( std::size_t idx = 0; idx < BOOST_PP_SEQ_SIZE(seq); ++idx ) { \
 			switch ( idx ) { \
 				BOOST_PP_SEQ_FOR_EACH_I( \
