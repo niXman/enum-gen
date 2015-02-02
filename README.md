@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/niXman/enum-gen.svg?branch=master)](https://travis-ci.org/niXman/enum-gen)
+
 enum-gen
 ========
 
