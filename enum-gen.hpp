@@ -2,7 +2,15 @@
 #ifndef _enum_gen__enum_gen_hpp
 #define _enum_gen__enum_gen_hpp
 
-#include <boost/preprocessor.hpp>
+#include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <boost/preprocessor/control/if.hpp>
+#include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
+#include <boost/preprocessor/tuple/size.hpp>
+#include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/seq/for_each_i.hpp>
 
 #include <cstdint>
 #include <cstring>
@@ -27,7 +35,7 @@
 		,BOOST_PP_TUPLE_ELEM(0, elem) /* member */ \
 	)
 
-#define ENUM_GEN_DECLARE_ENUM_WRITE_CASES(unused, data, idx, elem) \
+#define ENUM_GEN_DECLARE_ENUM_WRITE_CASES(unused, data, elem) \
 	case data::BOOST_PP_TUPLE_ELEM(0, elem): \
 		return BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem))+offset \
 	;
@@ -37,12 +45,12 @@
 
 /****************************************************************************/
 
-#define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX(unused, data, idx, elem) \
+#define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX(unused, data, elem) \
 	BOOST_PP_STRINGIZE(data::BOOST_PP_TUPLE_ELEM(0, elem)),
 
 #define ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES(name, seq) \
 	static const char *members[] = { \
-	BOOST_PP_SEQ_FOR_EACH_I( \
+	BOOST_PP_SEQ_FOR_EACH( \
 			 ENUM_GEN_DECLARE_ENUM_MEMBERS_NAMES_AUX \
 			,name \
 			,seq \
@@ -86,7 +94,7 @@
 	inline const char *enum_cast(const name &e, const bool flag = true) { \
 		const std::size_t offset = (true == flag ? 0 : sizeof(BOOST_PP_STRINGIZE(name::))-1); \
 		switch ( e ) { \
-			BOOST_PP_SEQ_FOR_EACH_I( \
+			BOOST_PP_SEQ_FOR_EACH( \
 				 ENUM_GEN_DECLARE_ENUM_WRITE_CASES \
 				,name\
 				,seq \
