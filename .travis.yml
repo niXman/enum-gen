@@ -1,0 +1,34 @@
+language: cpp
+
+os:
+  - linux
+
+compiler:
+  - gcc
+
+notifications:
+ email:
+   on_success: change
+   on_failure: always
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update
+  - sudo apt-get install g++-4.9 cmake
+  - if [[ -f /usr/bin/g++ ]]; then sudo rm /usr/bin/g++; fi
+  - sudo ln /usr/bin/g++-4.9 /usr/bin/g++
+  - wget http://sourceforge.net/projects/boost/files/boost/1.50.0/boost_1_50_0.tar.bz2
+  - tar jxf boost_1_50_0.tar.bz2
+  - cd boost_1_50_0
+  - ./bootstrap.sh
+  - sudo ./bjam release install -d0 --with-chrono --prefix=/usr/local -j4
+  - sudo ldconfig
+
+install:
+  - mkdir -p $TRAVIS_BUILD_DIR
+  - cd $TRAVIS_BUILD_DIR
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - g++ -std=c++11 main.cpp -omain
+  - ./main
