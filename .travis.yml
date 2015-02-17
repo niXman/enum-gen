@@ -15,7 +15,7 @@ before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update
   - sudo apt-get install g++-4.8
-  - g++ -v
+  - g++-4.8 -v
   - wget http://sourceforge.net/projects/boost/files/boost/1.50.0/boost_1_50_0.tar.bz2
   - tar jxf boost_1_50_0.tar.bz2
   - cd boost_1_50_0
@@ -29,5 +29,5 @@ install:
 
 script:
   - cd $TRAVIS_BUILD_DIR
-  - g++ -std=c++0x main.cpp -omain
+  - g++-4.8 -std=c++11 main.cpp -omain
   - ./main
