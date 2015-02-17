@@ -14,6 +14,20 @@
 
 /***************************************************************************/
 
+enum class myenum0: std::uint8_t {
+	 member0
+	,member1
+	,member2
+};
+ENUM_GEN_ADAPT_ENUM(
+	 myenum0
+	,std::uint8_t
+	,
+	(member0)
+	(member1)
+	(member2)
+)
+
 ENUM_GEN_DECLARE_ENUM(
 	 myenum1
 	,std::uint8_t
@@ -51,6 +65,22 @@ ENUM_GEN_DECLARE_ENUM(
 );
 
 /***************************************************************************/
+
+void test_for_each() {
+	int idx = 0;
+	for ( const auto &it: enum_info<myenum0>::values ) {
+//		std::cout << "name=" << it.name << ", value=" << enum_cast(it.value, false) << ", ivalue=" << (int)it.ivalue << std::endl;
+		switch ( idx ) {
+			case 0: MY_ASSERT(0 == strcmp(it.name, "myenum0::member0") && 0 == strcmp("myenum0::member0", enum_cast(it.value)) && it.ivalue == 0); break;
+			case 1: MY_ASSERT(0 == strcmp(it.name, "myenum0::member1") && 0 == strcmp("myenum0::member1", enum_cast(it.value)) && it.ivalue == 1); break;
+			case 2: MY_ASSERT(0 == strcmp(it.name, "myenum0::member2") && 0 == strcmp("myenum0::member2", enum_cast(it.value)) && it.ivalue == 2); break;
+			default: MY_ASSERT(0)
+		}
+		++idx;
+	}
+
+	std::cout << "test_for_each() PASSED" << std::endl;
+}
 
 void test_out() {
 	std::stringstream s1;
@@ -106,6 +136,7 @@ void test_cast_from_char() {
 /***************************************************************************/
 
 int main() {
+	test_for_each();
 	test_out();
 	test_cast_to_char();
 	test_cast_from_char();
