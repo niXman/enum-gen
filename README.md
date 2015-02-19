@@ -5,9 +5,30 @@ enum-gen
 
 'enum's and C++11 'enum class'es preprocessor generator
 
-### "Example"
+### Example
+# ENUM_GEN_ADAPT_ENUM() example:
+```cpp
+// existing enum
+enum class myenum1: std::uint8_t {
+	 member1
+	,member2
+	,member3
+};
 
-For this macro record:
+// ...
+
+// meta-code generation
+ENUM_GEN_ADAPT_ENUM(
+	 myenum1
+	,std::uint8_t
+	,
+	(member1)
+	(member2)
+	(member3)
+)
+```
+
+# ENUM_GEN_DECLARE_ENUM() example:
 ```cpp
 ENUM_GEN_DECLARE_ENUM(
    myenum1, std::uint8_t,
@@ -17,59 +38,21 @@ ENUM_GEN_DECLARE_ENUM(
 )
 ```
 
-will be generated this code:
+# Using generated meta-code
 ```cpp
-enum class myenum1: std::uint8_t {
-	 member1 = 2
-	,member2
-	,member3 = 0x44
-};
-
-inline const char* enum_cast(const myenum1& e, const bool flag = true) {
-	const std::size_t offset = (true == flag ? 0 : sizeof("myenum1::") - 1);
-	switch (e) {
-		case myenum1::member1: return "myenum1::member1"+offset;
-		case myenum1::member2: return "myenum1::member2"+offset;
-		case myenum1::member3: return "myenum1::member3"+offset;
-	}
-	assert("bad enum value #1" == 0);
+// using generated meta-code
+for ( const auto &it: enum_info<myenum1>::values ) {
+	std::cout
+		<< "name=" << it.name // const char *
+		<< ", value=" << static_cast<std::uint8_t>(it.value) // const myenum1, cast to underlying type
+		<< ", ivalue=" << it.ivalue // const std::uint8_t
+	<< std::endl;
 }
 
-template <typename E>
-E enum_cast(const char*);
+myenum1 e0 = myenum1::member2;
+const char *name = enum_cast(e0); // cast to string
+assert(0 == std::strcmp(name, "myenum1::member2"));
 
-template <>
-myenum1 enum_cast<myenum1>(const char* str) {
-	static const char* members[] = {
-		 "myenum1::member1"
-		,"myenum1::member2"
-		,"myenum1::member3"
-		,0
-	};
-	const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof("myenum1::") - 1);
-	for (std::size_t idx = 0; idx < 3; ++idx) {
-		switch (idx) {
-			case 0: if (0 == std::strcmp(members[0]+offset, str)) return myenum1::member1;
-			case 1: if (0 == std::strcmp(members[1]+offset, str)) return myenum1::member2;
-			case 2: if (0 == std::strcmp(members[2]+offset, str)) return myenum1::member3;
-		}
-	}
-	assert("bad enum value #2" == 0);
-}
-
-std::ostream& operator<<(std::ostream& os, const myenum1& e) {
-	return (os << enum_cast(e));
-}
-
-inline constexpr myenum1 operator&(const myenum1& l, const myenum1& r) {
-	return static_cast<myenum1>(static_cast<std::uint8_t>(l) & static_cast<std::uint8_t>(r));
-}
-
-inline constexpr myenum1 operator|(const myenum1& l, const myenum1& r) {
-	return static_cast<myenum1>(static_cast<std::uint8_t>(l) | static_cast<std::uint8_t>(r));
-}
-
-inline constexpr myenum1 operator^(const myenum1& l, const myenum1& r) {
-	return static_cast<myenum1>(static_cast<std::uint8_t>(l) ^ static_cast<std::uint8_t>(r));
-}
+myenum1 e1 = enum_cast<myenum1>(name);
+assert(e1 == e0);
 ```
