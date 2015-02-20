@@ -88,8 +88,8 @@
 			,seq \
 		) \
 	}; \
-	inline const char *enum_cast(const name_ &e, const bool flag = true) { \
-		const std::size_t offset = (true == flag ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+	inline const char *enum_cast(const name_ &e, const bool full_name = true) { \
+		const std::size_t offset = (true == full_name ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
 		switch ( e ) { \
 			BOOST_PP_SEQ_FOR_EACH_I( \
 				 ENUM_GEN_ADAPT_ENUM_GENERATE_CASES \
