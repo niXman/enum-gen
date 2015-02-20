@@ -41,11 +41,10 @@ ENUM_GEN_DECLARE_ENUM(
 
 ### Using generated meta-code
 ```cpp
-// using generated meta-code
 for ( const auto &it: enum_info<myenum1>::values ) {
 	std::cout
 		<< "name=" << it.name // const char *
-		<< ", value=" << static_cast<std::uint8_t>(it.value) // const myenum1, cast to underlying type
+		<< ", value=" << static_cast<std::uint8_t>(it.value) // const myenum1, casting to underlying type
 		<< ", ivalue=" << it.ivalue // const std::uint8_t
 	<< std::endl;
 }
