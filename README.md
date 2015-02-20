@@ -93,8 +93,8 @@ const enum_info<myenum1>::value_type enum_info<myenum1>::values[] = {
 	{ "myenum1::member3", myenum1::member3, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member3) },
 };
 
-inline const char* enum_cast(const myenum1& e, const bool flag = true) {
-	const std::size_t offset = (true == flag ? 0 : sizeof("myenum1::") - 1);
+inline const char* enum_cast(const myenum1& e, const bool full_name = true) {
+	const std::size_t offset = (true == full_name ? 0 : sizeof("myenum1::") - 1);
 	switch (e) {
 		case myenum1::member1: return enum_info<myenum1>::values[0].name + offset;
 		case myenum1::member2: return enum_info<myenum1>::values[1].name + offset;
