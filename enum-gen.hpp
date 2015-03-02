@@ -28,28 +28,6 @@
 
 /****************************************************************************/
 
-#define ENUM_GEN_DECLARE_ENUM_OPERATORS_IMPL(unused, data, elem) \
-	inline constexpr BOOST_PP_TUPLE_ELEM(0, data) operator elem ( \
-		 const BOOST_PP_TUPLE_ELEM(0, data) &l \
-		,const BOOST_PP_TUPLE_ELEM(0, data) &r \
-	) { \
-		return static_cast<BOOST_PP_TUPLE_ELEM(0, data)> \
-		( \
-			static_cast<BOOST_PP_TUPLE_ELEM(1, data)>(l) \
-			elem \
-			static_cast<BOOST_PP_TUPLE_ELEM(1, data)>(r) \
-		); \
-	}
-
-#define ENUM_GEN_DECLARE_ENUM_OPERATORS(name, type, seq) \
-	BOOST_PP_SEQ_FOR_EACH( \
-		 ENUM_GEN_DECLARE_ENUM_OPERATORS_IMPL \
-		,(name, type) \
-		,seq \
-	)
-
-/****************************************************************************/
-
 #define ENUM_GEN_ADAPT_ENUM_GENERATE_CASES2(unused, data, idx, elem) \
 	case idx: if ( 0 == std::strcmp(enum_info<data>::values[idx].name+offset, str) ) return data::BOOST_PP_TUPLE_ELEM(0, elem);
 
@@ -64,7 +42,7 @@
 		,static_cast<enum_info<data>::underlying_type>(data::BOOST_PP_TUPLE_ELEM(0, elem)) \
 	},
 
-#define ENUM_GEN_ADAPT_ENUM_IMPL(name_, type_, seq) \
+#define ENUM_GEN_ADAPT_ENUM_IMPL(name_, seq) \
 	template<typename> \
 	struct enum_info; \
 	\
@@ -78,6 +56,32 @@
 			const underlying_type ivalue; \
 		}; \
 		static const value_type values[]; \
+		\
+		static const char *enum_cast(const name_ e, const bool full_name = true) { \
+			const std::size_t offset = (true == full_name ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+			switch ( e ) { \
+				BOOST_PP_SEQ_FOR_EACH_I( \
+					ENUM_GEN_ADAPT_ENUM_GENERATE_CASES \
+					,name_ \
+					,seq \
+				) \
+			} \
+			assert("bad enum value #1" == 0); \
+		} \
+		\
+		static name_ enum_cast(const char *str) { \
+			const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+			for ( std::size_t idx = 0; idx < BOOST_PP_SEQ_SIZE(seq); ++idx ) { \
+				switch ( idx ) { \
+					BOOST_PP_SEQ_FOR_EACH_I( \
+						ENUM_GEN_ADAPT_ENUM_GENERATE_CASES2 \
+						,name_ \
+						,seq \
+					) \
+				} \
+			} \
+			assert("bad enum value #2" == 0); \
+		} \
 	}; \
 	const \
 	enum_info<name_>::value_type \
@@ -88,45 +92,40 @@
 			,seq \
 		) \
 	}; \
-	inline const char *enum_cast(const name_ &e, const bool full_name = true) { \
-		const std::size_t offset = (true == full_name ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-		switch ( e ) { \
-			BOOST_PP_SEQ_FOR_EACH_I( \
-				 ENUM_GEN_ADAPT_ENUM_GENERATE_CASES \
-				,name_ \
-				,seq \
-			) \
-		} \
-		assert("bad enum value #1" == 0); \
-	} \
 	\
+	inline const char* enum_cast(const name_ e, const bool full_name = true) { return enum_info<name_>::enum_cast(e, full_name); } \
 	template<typename E> \
 	E enum_cast(const char *); \
-	\
 	template<> \
-	name_ enum_cast<name_>(const char *str) { \
-		const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-		for ( std::size_t idx = 0; idx < BOOST_PP_SEQ_SIZE(seq); ++idx ) { \
-			switch ( idx ) { \
-				BOOST_PP_SEQ_FOR_EACH_I( \
-					 ENUM_GEN_ADAPT_ENUM_GENERATE_CASES2 \
-					,name_ \
-					,seq \
-				) \
-			} \
-		} \
-		assert("bad enum value #2" == 0); \
+	inline name_ enum_cast(const char *str) { return enum_info<name_>::enum_cast(str); } \
+	\
+	std::ostream& operator<< (std::ostream &os, const name_ e) { \
+		return (os << enum_cast(e)); \
 	} \
 	\
-	std::ostream& operator<< (std::ostream &os, const name_ &e) { \
-		return (os << enum_cast(e)); \
+	inline constexpr enum_info<name_>::underlying_type operator| ( \
+		 const name_ l, const name_ r \
+	) { \
+		return \
+			static_cast<enum_info<name_>::underlying_type>(l) \
+			| \
+			static_cast<enum_info<name_>::underlying_type>(r) \
+		; \
+	} \
+	inline constexpr enum_info<name_>::underlying_type operator& ( \
+		 const name_ l, const enum_info<name_>::underlying_type r \
+	) { \
+		return static_cast<enum_info<name_>::underlying_type>(l) & r; \
+	} \
+	inline constexpr enum_info<name_>::underlying_type operator& ( \
+		 const enum_info<name_>::underlying_type l, const name_ r \
+	) { \
+		return l & static_cast<enum_info<name_>::underlying_type>(r); \
 	}
 
-
-#define ENUM_GEN_ADAPT_ENUM(name, type, seq) \
+#define ENUM_GEN_ADAPT_ENUM(name, seq) \
 	ENUM_GEN_ADAPT_ENUM_IMPL( \
 		 name \
-		,type \
 		,BOOST_PP_CAT(ENUM_GEN_WRAP_SEQUENCE_X seq, 0) \
 	)
 
@@ -139,7 +138,27 @@
 		,BOOST_PP_TUPLE_ELEM(0, elem) /* member */ \
 	)
 
-#define ENUM_GEN_DECLARE_ENUM_IMPL(name, type, seq) \
+/****************************************************************************/
+
+#define ENUM_GEN_DECLARE_ENUM_IMPL(name, seq) \
+	enum name { \
+	BOOST_PP_SEQ_FOR_EACH_I( \
+			 ENUM_GEN_DECLARE_ENUM_MEMBERS \
+			,~ \
+			,seq \
+		) \
+	}; \
+	ENUM_GEN_ADAPT_ENUM_IMPL(name, seq)
+
+#define ENUM_GEN_DECLARE_ENUM(name, seq) \
+	ENUM_GEN_DECLARE_ENUM_IMPL( \
+		 name \
+		,BOOST_PP_CAT(ENUM_GEN_WRAP_SEQUENCE_X seq, 0) \
+	)
+
+/****************************************************************************/
+
+#define ENUM_GEN_DECLARE_ENUM_CLASS_IMPL(name, type, seq) \
 	enum class name : type { \
 	BOOST_PP_SEQ_FOR_EACH_I( \
 			 ENUM_GEN_DECLARE_ENUM_MEMBERS \
@@ -147,10 +166,10 @@
 			,seq \
 		) \
 	}; \
-	ENUM_GEN_ADAPT_ENUM_IMPL(name, type, seq)
+	ENUM_GEN_ADAPT_ENUM_IMPL(name, seq)
 
-#define ENUM_GEN_DECLARE_ENUM(name, type, seq) \
-	ENUM_GEN_DECLARE_ENUM_IMPL( \
+#define ENUM_GEN_DECLARE_ENUM_CLASS(name, type, seq) \
+	ENUM_GEN_DECLARE_ENUM_CLASS_IMPL( \
 		 name \
 		,type \
 		,BOOST_PP_CAT(ENUM_GEN_WRAP_SEQUENCE_X seq, 0) \
