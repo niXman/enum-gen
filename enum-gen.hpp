@@ -49,7 +49,6 @@
 	template<> \
 	struct enum_info<name_> { \
 		using underlying_type = std::underlying_type<name_>::type; \
-		static const char *names[]; \
 		struct value_type { \
 			const char *name; \
 			const name_ value; \
