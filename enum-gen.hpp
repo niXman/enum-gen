@@ -62,9 +62,6 @@
 
 /****************************************************************************/
 
-#define ENUM_GEN_ADAPT_ENUM_GENERATE_CASES2(unused, data, idx, elem) \
-	case idx: if ( 0 == std::strcmp(enum_info<data>::values[idx].name+offset, str) ) return data::BOOST_PP_TUPLE_ELEM(0, elem);
-
 #define ENUM_GEN_ADAPT_ENUM_GENERATE_CASES(unused, data, idx, elem) \
 	case data::BOOST_PP_TUPLE_ELEM(0, elem): \
 		return enum_info<data>::values[idx].name+offset \
@@ -127,7 +124,7 @@
 	bool has_member(const char *); \
 	template<> \
 	inline bool has_member<name_>(const char *str) { \
-	const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+		const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
 		for ( const auto &it: enum_info<name_>::values ) { \
 			if ( 0 == std::strcmp(it.name+offset, str) ) \
 				return true; \
