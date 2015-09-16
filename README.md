@@ -33,9 +33,9 @@ ENUM_GEN_DECLARE_ENUM(
     myenum1
    ,std::uint8_t
    ,
-   (member1,2)
+   (member1, 0x02)
    (member2)
-   (member3,0x44)
+   (member3, 0x04)
 )
 ```
 
@@ -62,7 +62,6 @@ Using this macro:
 ```cpp
 ENUM_GEN_DECLARE_ENUM(
     myenum1
-   ,std::uint8_t
    ,
    (member1, 0x02)
    (member2)
