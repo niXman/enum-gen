@@ -89,32 +89,6 @@
 			const underlying_type ivalue; \
 		}; \
 		static const value_type values[]; \
-		\
-		static const char *enum_cast(const name_ e, const bool full_name = true) { \
-			const std::size_t offset = (true == full_name ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-			switch ( e ) { \
-				BOOST_PP_SEQ_FOR_EACH_I( \
-					ENUM_GEN_ADAPT_ENUM_GENERATE_CASES \
-					,name_ \
-					,seq \
-				) \
-			} \
-			assert("bad enum value #1" == 0); \
-		} \
-		\
-		static name_ enum_cast(const char *str) { \
-			const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-			for ( std::size_t idx = 0; idx < BOOST_PP_SEQ_SIZE(seq); ++idx ) { \
-				switch ( idx ) { \
-					BOOST_PP_SEQ_FOR_EACH_I( \
-						ENUM_GEN_ADAPT_ENUM_GENERATE_CASES2 \
-						,name_ \
-						,seq \
-					) \
-				} \
-			} \
-			assert("bad enum value #2" == 0); \
-		} \
 	}; \
 	const \
 	enum_info<name_>::value_type \
@@ -126,11 +100,40 @@
 		) \
 	}; \
 	\
-	inline const char* enum_cast(const name_ e, const bool full_name = true) { return enum_info<name_>::enum_cast(e, full_name); } \
+	inline const char* enum_cast(const name_ e, const bool full_name = true) { \
+		const std::size_t offset = (true == full_name ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+		switch ( e ) { \
+			BOOST_PP_SEQ_FOR_EACH_I( \
+				 ENUM_GEN_ADAPT_ENUM_GENERATE_CASES \
+				,name_ \
+				,seq \
+			) \
+		} \
+		assert("bad enum value #1" == 0); \
+	} \
 	template<typename E> \
 	E enum_cast(const char *); \
 	template<> \
-	inline name_ enum_cast(const char *str) { return enum_info<name_>::enum_cast(str); } \
+	inline name_ enum_cast(const char *str) { \
+		const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+		for ( const auto &it: enum_info<name_>::values ) { \
+			if ( 0 == std::strcmp(it.name+offset, str) ) \
+				return it.value; \
+		} \
+		assert("bad enum value #2" == 0); \
+	} \
+	\
+	template<typename E> \
+	bool has_member(const char *); \
+	template<> \
+	inline bool has_member<name_>(const char *str) { \
+	const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
+		for ( const auto &it: enum_info<name_>::values ) { \
+			if ( 0 == std::strcmp(it.name+offset, str) ) \
+				return true; \
+		} \
+		return false; \
+	} \
 	\
 	std::ostream& operator<< (std::ostream &os, const name_ e) { \
 		return (os << enum_cast(e)); \
