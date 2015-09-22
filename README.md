@@ -5,7 +5,7 @@ enum-gen
 
 'enum's and C++11 'enum class'es preprocessor generator
 
-### ENUM_GEN_ADAPT_ENUM() example:
+### ENUM_GEN_ADAPT_ENUM(enum_name, sequence_of_enum_members) example:
 ```cpp
 // existing enum
 enum class myenum1: std::uint8_t {
@@ -26,10 +26,22 @@ ENUM_GEN_ADAPT_ENUM(
 )
 ```
 
-### ENUM_GEN_DECLARE_ENUM() example:
+### ENUM_GEN_DECLARE_ENUM(enum_name, sequence_of_enum_members) example:
 ```cpp
 ENUM_GEN_DECLARE_ENUM(
     myenum1
+   ,
+   (member1, 0x02)
+   (member2)
+   (member3, 0x04)
+)
+```
+
+### ENUM_GEN_DECLARE_ENUM_CLASS(enum_name, underlying_type, sequence_of_enum_members) example:
+```cpp
+ENUM_GEN_DECLARE_ENUM_CLASS(
+    myenum1
+   ,std::uint8_t
    ,
    (member1, 0x02)
    (member2)
