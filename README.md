@@ -54,16 +54,16 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 for ( const auto &it: enum_info<myenum1>::values ) {
 	std::cout
 		<< "name=" << it.name // const char *
-		<< ", value=" << static_cast<std::uint8_t>(it.value) // const myenum1, casting to underlying type
+		<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // name of member as const char*
 		<< ", ivalue=" << it.ivalue // const std::uint8_t
 	<< std::endl;
 }
 
 myenum1 e0 = myenum1::member2;
-const char *name = enum_cast(e0); // cast to string
+const char *name = enum_cast(e0); // cast to cstring
 assert(0 == std::strcmp(name, "myenum1::member2"));
 
-myenum1 e1 = enum_cast<myenum1>(name);
+myenum1 e1 = enum_cast<myenum1>(name); // cast from cstring
 assert(e1 == e0);
 ```
 
