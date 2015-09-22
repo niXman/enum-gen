@@ -111,11 +111,28 @@ ENUM_GEN_DECLARE_ENUM(
 void test_for_each() {
 	int idx = 0;
 	for ( const auto &it: enum_info<myenum0>::values ) {
-//		std::cout << "name=" << it.name << ", value=" << enum_cast(it.value, false) << ", ivalue=" << (int)it.ivalue << std::endl;
 		switch ( idx ) {
-			case 0: MY_ASSERT(0 == strcmp(it.name, "myenum0::member0") && 0 == strcmp("myenum0::member0", enum_cast(it.value)) && it.ivalue == 0); break;
-			case 1: MY_ASSERT(0 == strcmp(it.name, "myenum0::member1") && 0 == strcmp("myenum0::member1", enum_cast(it.value)) && it.ivalue == 1); break;
-			case 2: MY_ASSERT(0 == strcmp(it.name, "myenum0::member2") && 0 == strcmp("myenum0::member2", enum_cast(it.value)) && it.ivalue == 2); break;
+			case 0: MY_ASSERT(
+				0         == strcmp(it.name, "myenum0::member0") &&
+				0         == strcmp("myenum0::member0", enum_cast(it.value)) &&
+				it.ivalue == static_cast<enum_info<myenum0>::underlying_type>(it.value) &&
+				0         == it.ivalue
+			);
+			break;
+			case 1: MY_ASSERT(
+				0         == strcmp(it.name, "myenum0::member1") &&
+				0         == strcmp("myenum0::member1", enum_cast(it.value)) &&
+				it.ivalue == static_cast<enum_info<myenum0>::underlying_type>(it.value) &&
+				1         == it.ivalue
+			);
+			break;
+			case 2: MY_ASSERT(
+				0         == strcmp(it.name, "myenum0::member2") &&
+				0         == strcmp("myenum0::member2", enum_cast(it.value)) &&
+				it.ivalue == static_cast<enum_info<myenum0>::underlying_type>(it.value) &&
+				2         == it.ivalue
+			);
+			break;
 			default: MY_ASSERT(0)
 		}
 		++idx;
@@ -182,11 +199,6 @@ void test_cast_from_char() {
 	MY_ASSERT(myenum5::member13 == enum_cast<myenum5>("member13"));
 
 	std::cout << "test_cast_from_char() PASSED" << std::endl;
-}
-
-template<typename T>
-void foo(T) {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 void test_operators() {
