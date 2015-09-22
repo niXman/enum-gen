@@ -19,7 +19,6 @@ enum class myenum1: std::uint8_t {
 // meta-code generation
 ENUM_GEN_ADAPT_ENUM(
 	 myenum1
-	,std::uint8_t
 	,
 	(member1)
 	(member2)
@@ -31,7 +30,6 @@ ENUM_GEN_ADAPT_ENUM(
 ```cpp
 ENUM_GEN_DECLARE_ENUM(
     myenum1
-   ,std::uint8_t
    ,
    (member1, 0x02)
    (member2)
