@@ -9,7 +9,7 @@ enum-gen
 ```cpp
 // existing enum
 enum class myenum1: std::uint8_t {
-	 member1
+     member1
 	,member2
 	,member3
 };
@@ -52,10 +52,10 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 ### Using generated meta-code
 ```cpp
 for ( const auto &it: enum_info<myenum1>::values ) {
-	std::cout
-		<< "name=" << it.name // const char *
-		<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // name of member as const char*
-		<< ", ivalue=" << it.ivalue // const std::uint8_t
+    std::cout
+	<< "name=" << it.name // const char *
+	<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // name of member as const char*
+	<< ", ivalue=" << it.ivalue // const std::uint8_t
 	<< std::endl;
 }
 
@@ -71,9 +71,9 @@ assert(e1 == e0);
 ```cpp
 for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
 	std::cout
-		<< "name=" << it->name // const char *
-		<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // name of member as const char*
-		<< ", ivalue=" << it->ivalue // const std::uint8_t
+	<< "name=" << it->name // const char *
+	<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // name of member as const char*
+	<< ", ivalue=" << it->ivalue // const std::uint8_t
 	<< std::endl;
 }
 ```
