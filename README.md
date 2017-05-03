@@ -67,6 +67,17 @@ myenum1 e1 = enum_cast<myenum1>(name); // cast from cstring
 assert(e1 == e0);
 ```
 
+### Using iterators from generated meta-code
+```cpp
+for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
+	std::cout
+		<< "name=" << it->name // const char *
+		<< ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // name of member as const char*
+		<< ", ivalue=" << it->ivalue // const std::uint8_t
+	<< std::endl;
+}
+```
+
 ### Example of generated meta-code
 Using this macro:
 ```cpp
