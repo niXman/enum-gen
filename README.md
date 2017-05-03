@@ -67,7 +67,7 @@ myenum1 e1 = enum_cast<myenum1>(name); // cast from cstring
 assert(e1 == e0);
 ```
 
-### Using iterators from generated meta-code
+### Using iterators with generated meta-code
 ```cpp
 for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
     std::cout
