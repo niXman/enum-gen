@@ -1,5 +1,5 @@
 
-// Copyright (c) 2014-2015 niXman (i dot nixman dog gmail dot com). All
+// Copyright (c) 2014-2017 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
 // This file is part of ENUM-GEN(https://github.com/niXman/enum-gen) project.
