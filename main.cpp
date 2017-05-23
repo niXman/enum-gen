@@ -49,12 +49,12 @@
 /***************************************************************************/
 
 enum class myenum0: std::uint8_t {
-    member0
+     member0
     ,member1
     ,member2
 };
 ENUM_GEN_ADAPT_ENUM(
-    myenum0
+     myenum0
     ,
     (member0)
     (member1)
@@ -62,7 +62,7 @@ ENUM_GEN_ADAPT_ENUM(
 )
 
 ENUM_GEN_DECLARE_ENUM_CLASS(
-    myenum1
+     myenum1
     ,std::uint8_t
     ,
     (member1, 1<<0)
@@ -72,7 +72,7 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 );
 
 ENUM_GEN_DECLARE_ENUM_CLASS(
-    myenum2
+     myenum2
     ,std::uint8_t
     ,
     (member4)
