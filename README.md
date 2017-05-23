@@ -53,8 +53,8 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 ```cpp
 for ( const auto &it: enum_info<myenum1>::values ) {
     std::cout
-    << "name=" << it.name // const char *
-    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // name of member as const char*
+    << "name=" << it.name // name of member as const char*
+    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // enum member
     << ", ivalue=" << it.ivalue // const std::uint8_t
     << std::endl;
 }
@@ -71,8 +71,8 @@ assert(e1 == e0);
 ```cpp
 for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
     std::cout
-    << "name=" << it->name // const char *
-    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // name of member as const char*
+    << "name=" << it->name // name of member as const char*
+    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // enum member
     << ", ivalue=" << it->ivalue // const std::uint8_t
     << std::endl;
 }
@@ -117,10 +117,10 @@ struct enum_info<myenum1> {
     static const value_type values[];
 };
 const enum_info<myenum1>::value_type enum_info<myenum1>::values[] = {
-    { "myenum1::member1", myenum1::member1, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member1) },
-    { "myenum1::member2", myenum1::member2, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member2) },
-    { "myenum1::member3", myenum1::member3, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member3) },
-    { "myenum1::member4", myenum1::member4, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member4) },
+     { "myenum1::member1", myenum1::member1, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member1) }
+    ,{ "myenum1::member2", myenum1::member2, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member2) }
+    ,{ "myenum1::member3", myenum1::member3, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member3) }
+    ,{ "myenum1::member4", myenum1::member4, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member4) }
 };
 
 inline const char* enum_cast(const myenum1 e, const bool full_name = true) {
@@ -130,7 +130,7 @@ inline const char* enum_cast(const myenum1 e, const bool full_name = true) {
         case myenum1::member2: return enum_info<myenum1>::values[1].name+offset;
         case myenum1::member3: return enum_info<myenum1>::values[2].name+offset;
         case myenum1::member4: return enum_info<myenum1>::values[3].name+offset;
-	}
+    }
 
     assert("bad enum value #1" == 0);
 }
