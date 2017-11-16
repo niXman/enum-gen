@@ -220,24 +220,24 @@ void test_cast_to_char() {
 }
 
 void test_cast_from_char() {
-    MY_ASSERT(myenum1::member2 == enum_cast<myenum1>("myenum1::member2"));
-    MY_ASSERT(myenum1::member2 == enum_cast<myenum1>("member2"));
-    MY_ASSERT(myenum2::member5 == enum_cast<myenum2>("myenum2::member5"));
-    MY_ASSERT(myenum2::member5 == enum_cast<myenum2>("member5"));
-    MY_ASSERT(myenum3::member8 == enum_cast<myenum3>("myenum3::member8"));
-    MY_ASSERT(myenum3::member8 == enum_cast<myenum3>("member8"));
-    MY_ASSERT(myenum4::member11 == enum_cast<myenum4>("myenum4::member11"));
-    MY_ASSERT(myenum4::member11 == enum_cast<myenum4>("member11"));
-    MY_ASSERT(myenum5::member13 == enum_cast<myenum5>("myenum5::member13"));
-    MY_ASSERT(myenum5::member13 == enum_cast<myenum5>("member13"));
+    MY_ASSERT(myenum1::member2 == enum_cast(myenum1{}, "myenum1::member2"));
+    MY_ASSERT(myenum1::member2 == enum_cast(myenum1{}, "member2"));
+    MY_ASSERT(myenum2::member5 == enum_cast(myenum2{}, "myenum2::member5"));
+    MY_ASSERT(myenum2::member5 == enum_cast(myenum2{}, "member5"));
+    MY_ASSERT(myenum3::member8 == enum_cast(myenum3{}, "myenum3::member8"));
+    MY_ASSERT(myenum3::member8 == enum_cast(myenum3{}, "member8"));
+    MY_ASSERT(myenum4::member11 == enum_cast(myenum4{}, "myenum4::member11"));
+    MY_ASSERT(myenum4::member11 == enum_cast(myenum4{}, "member11"));
+    MY_ASSERT(myenum5::member13 == enum_cast(myenum5{}, "myenum5::member13"));
+    MY_ASSERT(myenum5::member13 == enum_cast(myenum5{}, "member13"));
 
     std::cout << "test_cast_from_char() PASSED" << std::endl;
 }
 
 void test_operators() {
     static_assert(
-        std::is_same<std::underlying_type<myenum1>::type, std::uint8_t>::value
-        && std::is_same<decltype(myenum1::member1 | myenum1::member2), std::underlying_type<myenum1>::type>::value
+        std::is_same<std::underlying_type<myenum1>::type, std::uint8_t>::value && 
+        std::is_same<decltype(myenum1::member1 | myenum1::member2), std::underlying_type<myenum1>::type>::value
         ,"type error!"
     );
 
