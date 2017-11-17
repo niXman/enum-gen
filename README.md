@@ -135,11 +135,7 @@ inline const char* enum_cast(const myenum1 e, const bool full_name = true) {
     assert("bad enum value #1" == 0);
 }
 
-template <typename E>
-E enum_cast(const char*);
-
-template <>
-inline myenum1 enum_cast(const char* str) {
+inline myenum1 enum_cast(myenum1, const char* str) {
     const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof("myenum1::")-1);
     for (const auto& it : enum_info<myenum1>::values) {
         if (0 == std::strcmp(it.name + offset, str))
@@ -149,11 +145,7 @@ inline myenum1 enum_cast(const char* str) {
     assert("bad enum value #2" == 0);
 }
 
-template <typename E>
-bool has_member(const char*);
-
-template <>
-inline bool has_member<myenum1>(const char* str) {
+inline bool has_member(myenum1, const char* str) {
     const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof("myenum1::")-1);
     for (const auto& it : enum_info<myenum1>::values) {
         if (0 == std::strcmp(it.name + offset, str))
