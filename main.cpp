@@ -259,6 +259,44 @@ void test_operators() {
     std::cout << "test_operators() PASSED" << std::endl;
 }
 
+void test_functional() {
+    MY_ASSERT(true == has_member(myenum1{}, "myenum1::member2"));
+    MY_ASSERT(true == has_member(myenum1{}, "member2"));
+    MY_ASSERT(true == has_member(myenum2{}, "myenum2::member5"));
+    MY_ASSERT(true == has_member(myenum2{}, "member5"));
+    MY_ASSERT(true == has_member(myenum3{}, "myenum3::member8"));
+    MY_ASSERT(true == has_member(myenum3{}, "member8"));
+    MY_ASSERT(true == has_member(myenum4{}, "myenum4::member11"));
+    MY_ASSERT(true == has_member(myenum4{}, "member11"));
+    MY_ASSERT(true == has_member(myenum5{}, "myenum5::member13"));
+    MY_ASSERT(true == has_member(myenum5{}, "member13"));
+
+    MY_ASSERT(false== has_member(myenum1{}, "myenum1::member22"));
+    MY_ASSERT(false== has_member(myenum1{}, "member22"));
+    MY_ASSERT(false== has_member(myenum2{}, "myenum2::member55"));
+    MY_ASSERT(false== has_member(myenum2{}, "member55"));
+    MY_ASSERT(false== has_member(myenum3{}, "myenum3::member88"));
+    MY_ASSERT(false== has_member(myenum3{}, "member888"));
+    MY_ASSERT(false== has_member(myenum4{}, "myenum4::member111"));
+    MY_ASSERT(false== has_member(myenum4{}, "member111"));
+    MY_ASSERT(false== has_member(myenum5{}, "myenum5::member133"));
+    MY_ASSERT(false== has_member(myenum5{}, "member133"));
+
+    MY_ASSERT(true == has_member(myenum1{}, static_cast<std::size_t>(myenum1::member2)));
+    MY_ASSERT(true == has_member(myenum2{}, static_cast<std::size_t>(myenum2::member5)));
+    MY_ASSERT(true == has_member(myenum3{}, static_cast<std::size_t>(myenum3::member8)));
+    MY_ASSERT(true == has_member(myenum4{}, static_cast<std::size_t>(myenum4::member11)));
+    MY_ASSERT(true == has_member(myenum5{}, static_cast<std::size_t>(myenum5::member13)));
+
+    MY_ASSERT(false== has_member(myenum1{}, static_cast<std::size_t>(22)));
+    MY_ASSERT(false== has_member(myenum2{}, static_cast<std::size_t>(55)));
+    MY_ASSERT(false== has_member(myenum3{}, static_cast<std::size_t>(88)));
+    MY_ASSERT(false== has_member(myenum4{}, static_cast<std::size_t>(111)));
+    MY_ASSERT(false== has_member(myenum5{}, static_cast<std::size_t>(133)));
+
+    std::cout << "test_functional() PASSED" << std::endl;
+}
+
 /***************************************************************************/
 
 int main() {
@@ -268,6 +306,7 @@ int main() {
     test_cast_to_char();
     test_cast_from_char();
     test_operators();
+    test_functional();
 
     return EXIT_SUCCESS;
 }

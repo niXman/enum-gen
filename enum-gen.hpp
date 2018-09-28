@@ -128,6 +128,13 @@
         } \
         return false; \
     } \
+    inline bool has_member(name_, std::size_t v) { \
+        for ( const auto &it: enum_info<name_>::values ) { \
+            if ( it.ivalue == static_cast<enum_info<name_>::underlying_type>(v) ) \
+                return true; \
+        } \
+        return false; \
+    } \
     \
     std::ostream& operator<< (std::ostream &os, const name_ e) { \
         return (os << enum_cast(e)); \
