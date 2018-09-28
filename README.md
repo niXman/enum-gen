@@ -63,8 +63,14 @@ myenum1 e0 = myenum1::member2;
 const char *name = enum_cast(e0); // cast to cstring
 assert(0 == std::strcmp(name, "myenum1::member2"));
 
-myenum1 e1 = enum_cast<myenum1>(name); // cast from cstring
+myenum1 e1 = enum_cast(myenum1{}, name); // cast from cstring
 assert(e1 == e0);
+
+assert(true == has_member(myenum1{}, "myenum1::member2"));
+assert(false== has_member(myenum1{}, "myenum1::member4"));
+
+assert(true == has_member(myenum1{}, 0x02));
+assert(false== has_member(myenum1{}, 0x05));
 ```
 
 ### Using iterators with generated meta-code
@@ -73,7 +79,7 @@ for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++
     std::cout
     << "name=" << it->name // name of member as const char*
     << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // enum member
-    << ", ivalue=" << it->ivalue // const std::uint8_t
+    << ", ivalue=" << it->ivalue // const std::uint8_t, the underlying_type
     << std::endl;
 }
 ```
