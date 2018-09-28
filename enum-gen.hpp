@@ -124,6 +124,12 @@
         } \
         assert("bad enum value #2" == 0); \
     } \
+    inline name_ enum_cast(name_, std::size_t v) { \
+    	for ( const auto &it: enum_info<name_>::values ) { \
+    		if ( it.ivalue == v ) \
+    			return it.value; \
+    	} \
+    } \
     \
     inline bool has_member(name_, const char *str) { \
         const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
@@ -135,7 +141,7 @@
     } \
     inline bool has_member(name_, std::size_t v) { \
         for ( const auto &it: enum_info<name_>::values ) { \
-            if ( it.ivalue == static_cast<enum_info<name_>::underlying_type>(v) ) \
+            if ( it.ivalue == v ) \
                 return true; \
         } \
         return false; \
