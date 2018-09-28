@@ -51,11 +51,21 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 
 ### Using generated meta-code
 ```cpp
+// range-based for
 for ( const auto &it: enum_info<myenum1>::values ) {
     std::cout
     << "name=" << it.name // name of member as const char*
     << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // enum member
-    << ", ivalue=" << it.ivalue // const std::uint8_t
+    << ", ivalue=" << it.ivalue // const std::uint8_t, the underlying_type
+    << std::endl;
+}
+
+// iterators
+for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
+    std::cout
+    << "name=" << it->name // name of member as const char*
+    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // enum member
+    << ", ivalue=" << it->ivalue // const std::uint8_t, the underlying_type
     << std::endl;
 }
 
@@ -71,109 +81,11 @@ assert(false== has_member(myenum1{}, "myenum1::member4"));
 
 assert(true == has_member(myenum1{}, 0x02));
 assert(false== has_member(myenum1{}, 0x05));
-```
 
-### Using iterators with generated meta-code
-```cpp
-for ( auto it = enum_info<myenum1>::begin(); it != enum_info<myenum1>::end(); ++it ) {
-    std::cout
-    << "name=" << it->name // name of member as const char*
-    << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it->value) // enum member
-    << ", ivalue=" << it->ivalue // const std::uint8_t, the underlying_type
-    << std::endl;
-}
-```
-
-### Example of generated meta-code
-Using this macro:
-```cpp
-ENUM_GEN_DECLARE_ENUM(
-     myenum1
-    ,
-    (member1, 0x02)
-    (member2)
-    (member3, 0x04)
-    (member4)
-)
-```
-This code will be generated:
-```cpp
-enum myenum1 {
-     member1 = 0x02
-    ,member2
-    ,member3 = 0x04
-    ,member4
-};
-
-template <typename>
-struct enum_info;
-
-template <>
-struct enum_info<myenum1> {
-    using underlying_type = std::underlying_type<myenum1>::type;
-    struct value_type {
-        const char* name;
-        const myenum1 value;
-        const underlying_type ivalue;
-        
-        using const_iterator = value_type const*;
-        static const_iterator begin() { return &values[0]; }
-        static const_iterator end() { return &values[4]; }
-    };
-    static const value_type values[];
-};
-const enum_info<myenum1>::value_type enum_info<myenum1>::values[] = {
-     { "myenum1::member1", myenum1::member1, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member1) }
-    ,{ "myenum1::member2", myenum1::member2, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member2) }
-    ,{ "myenum1::member3", myenum1::member3, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member3) }
-    ,{ "myenum1::member4", myenum1::member4, static_cast<enum_info<myenum1>::underlying_type>(myenum1::member4) }
-};
-
-inline const char* enum_cast(const myenum1 e, const bool full_name = true) {
-    const std::size_t offset = (true == full_name ? 0 : sizeof("myenum1::")-1);
-    switch (e) {
-        case myenum1::member1: return enum_info<myenum1>::values[0].name+offset;
-        case myenum1::member2: return enum_info<myenum1>::values[1].name+offset;
-        case myenum1::member3: return enum_info<myenum1>::values[2].name+offset;
-        case myenum1::member4: return enum_info<myenum1>::values[3].name+offset;
-    }
-
-    assert("bad enum value #1" == 0);
-}
-
-inline myenum1 enum_cast(myenum1, const char* str) {
-    const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof("myenum1::")-1);
-    for (const auto& it : enum_info<myenum1>::values) {
-        if (0 == std::strcmp(it.name + offset, str))
-            return it.value;
-    }
-
-    assert("bad enum value #2" == 0);
-}
-
-inline bool has_member(myenum1, const char* str) {
-    const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof("myenum1::")-1);
-    for (const auto& it : enum_info<myenum1>::values) {
-        if (0 == std::strcmp(it.name + offset, str))
-            return true;
-    }
-
-    return false;
-}
-
-std::ostream& operator<<(std::ostream& os, const myenum1 e) {
-    return (os << enum_cast(e));
-}
-
-inline constexpr enum_info<myenum1>::underlying_type operator|(const myenum1 l, const myenum1 r) {
-    return static_cast<enum_info<myenum1>::underlying_type>(l) | static_cast<enum_info<myenum1>::underlying_type>(r);
-}
-
-inline constexpr enum_info<myenum1>::underlying_type operator&(const myenum1 l, const enum_info<myenum1>::underlying_type r) {
-    return static_cast<enum_info<myenum1>::underlying_type>(l) & r;
-}
-
-inline constexpr enum_info<myenum1>::underlying_type operator&(const enum_info<myenum1>::underlying_type l, const myenum1 r) {
-    return l & static_cast<enum_info<myenum1>::underlying_type>(r);
-}
+const auto &values = get_values(myenum1{}); // array of values of members
+MY_ASSERT(values.size() == 4);
+MY_ASSERT(values[0] == 1);
+MY_ASSERT(values[1] == 2);
+MY_ASSERT(values[2] == 4);
+MY_ASSERT(values[3] == 16);
 ```

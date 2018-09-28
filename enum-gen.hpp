@@ -49,6 +49,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cassert>
+#include <array>
 
 /****************************************************************************/
 
@@ -73,6 +74,10 @@
         ,data::BOOST_PP_TUPLE_ELEM(0, elem) \
         ,static_cast<enum_info<data>::underlying_type>(data::BOOST_PP_TUPLE_ELEM(0, elem)) \
     }
+
+#define ENUM_GEN_ADAPT_ENUM_GENERATE_ARRAY_VALUES(unused, data, idx, unused1) \
+    BOOST_PP_COMMA_IF(idx) \
+        enum_info<data>::values[idx].ivalue
 
 #define ENUM_GEN_ADAPT_ENUM_IMPL(name_, seq) \
     template<typename> \
@@ -134,6 +139,18 @@
                 return true; \
         } \
         return false; \
+    } \
+    \
+    template<typename R = std::array<enum_info<name_>::underlying_type, BOOST_PP_SEQ_SIZE(seq)>> \
+    inline const R& get_values(name_) { \
+        static const R res{ \
+            BOOST_PP_SEQ_FOR_EACH_I( \
+                ENUM_GEN_ADAPT_ENUM_GENERATE_ARRAY_VALUES \
+                ,name_ \
+                ,seq \
+            ) \
+        };\
+        return res; \
     } \
     \
     std::ostream& operator<< (std::ostream &os, const name_ e) { \

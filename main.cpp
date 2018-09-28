@@ -294,6 +294,13 @@ void test_functional() {
     MY_ASSERT(false== has_member(myenum4{}, static_cast<std::size_t>(111)));
     MY_ASSERT(false== has_member(myenum5{}, static_cast<std::size_t>(133)));
 
+    const auto &values = get_values(myenum1{});
+    MY_ASSERT(values.size() == 4);
+    MY_ASSERT(values[0] == 1);
+    MY_ASSERT(values[1] == 2);
+    MY_ASSERT(values[2] == 4);
+    MY_ASSERT(values[3] == 16);
+
     std::cout << "test_functional() PASSED" << std::endl;
 }
 
