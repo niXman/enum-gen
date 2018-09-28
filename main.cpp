@@ -110,7 +110,7 @@ ENUM_GEN_DECLARE_ENUM(
 
 void test_for_each() {
     int idx = 0;
-    for ( const auto &it: enum_info<myenum0>::values ) {
+    for ( const auto &it: enum_info<myenum0>{} ) {
         switch ( idx ) {
             case 0: MY_ASSERT(
                 0         == strcmp(it.name, "myenum0::member0") &&

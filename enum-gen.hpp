@@ -49,9 +49,13 @@
 #include <cstdint>
 #include <cstring>
 #include <cassert>
+#include <cstdlib>
 #include <array>
 
 /****************************************************************************/
+
+#define ENUM_GEN_UNREACHABLE(expr) \
+	do { std::abort(); } while(0)
 
 #define ENUM_GEN_WRAP_SEQUENCE_X(...) \
     ((__VA_ARGS__)) ENUM_GEN_WRAP_SEQUENCE_Y
@@ -65,7 +69,7 @@
 
 #define ENUM_GEN_ADAPT_ENUM_GENERATE_CASES(unused, data, idx, elem) \
     case data::BOOST_PP_TUPLE_ELEM(0, elem): \
-        return enum_info<data>::values[idx].name+offset \
+        return enum_info<data>::__values()[idx].name+offset \
     ;
 
 #define ENUM_GEN_ADAPT_ENUM_GENERATE_VALUES(unused, data, idx, elem) \
@@ -77,7 +81,7 @@
 
 #define ENUM_GEN_ADAPT_ENUM_GENERATE_ARRAY_VALUES(unused, data, idx, unused1) \
     BOOST_PP_COMMA_IF(idx) \
-        enum_info<data>::values[idx].ivalue
+        enum_info<data>::__values()[idx].ivalue
 
 #define ENUM_GEN_ADAPT_ENUM_IMPL(name_, seq) \
     template<typename> \
@@ -91,18 +95,20 @@
             const name_ value; \
             const underlying_type ivalue; \
         }; \
-        static const value_type values[]; \
+        static const value_type* __values() { \
+            static const value_type values[] = { \
+                BOOST_PP_SEQ_FOR_EACH_I( \
+                    ENUM_GEN_ADAPT_ENUM_GENERATE_VALUES \
+                    ,name_ \
+                    ,seq \
+                ) \
+            }; \
+            return &values[0]; \
+        } \
         \
-        using const_iterator = value_type const*; \
-        static const_iterator begin() { return &values[0]; } \
-        static const_iterator end() { return &values[BOOST_PP_SEQ_SIZE(seq)]; } \
-    }; \
-    const enum_info<name_>::value_type enum_info<name_>::values[] = { \
-        BOOST_PP_SEQ_FOR_EACH_I( \
-            ENUM_GEN_ADAPT_ENUM_GENERATE_VALUES \
-            ,name_ \
-            ,seq \
-        ) \
+        using const_iterator = const value_type*; \
+        static const_iterator begin() { return &__values()[0]; } \
+        static const_iterator end() { return &__values()[BOOST_PP_SEQ_SIZE(seq)]; } \
     }; \
     \
     inline const char* enum_cast(const name_ e, const bool full_name = true) { \
@@ -114,33 +120,34 @@
                 ,seq \
             ) \
         } \
-        assert("bad enum value #1" == 0); \
+        ENUM_GEN_UNREACHABLE("bad enum value #1" == nullptr); \
     } \
     inline name_ enum_cast(name_, const char *str) { \
         const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-        for ( const auto &it: enum_info<name_>::values ) { \
+        for ( const auto &it: enum_info<name_>{} ) { \
             if ( 0 == std::strcmp(it.name+offset, str) ) \
                 return it.value; \
         } \
-        assert("bad enum value #2" == 0); \
+        ENUM_GEN_UNREACHABLE("bad enum value #2" == nullptr); \
     } \
     inline name_ enum_cast(name_, std::size_t v) { \
-    	for ( const auto &it: enum_info<name_>::values ) { \
+    	for ( const auto &it: enum_info<name_>{} ) { \
     		if ( it.ivalue == v ) \
     			return it.value; \
     	} \
+        ENUM_GEN_UNREACHABLE("bad enum value #3" == nullptr); \
     } \
     \
     inline bool has_member(name_, const char *str) { \
         const std::size_t offset = (0 != std::strchr(str, ':') ? 0 : sizeof(BOOST_PP_STRINGIZE(name_::))-1); \
-        for ( const auto &it: enum_info<name_>::values ) { \
+        for ( const auto &it: enum_info<name_>{} ) { \
             if ( 0 == std::strcmp(it.name+offset, str) ) \
                 return true; \
         } \
         return false; \
     } \
     inline bool has_member(name_, std::size_t v) { \
-        for ( const auto &it: enum_info<name_>::values ) { \
+        for ( const auto &it: enum_info<name_>{} ) { \
             if ( it.ivalue == v ) \
                 return true; \
         } \
@@ -159,7 +166,7 @@
         return res; \
     } \
     \
-    std::ostream& operator<< (std::ostream &os, const name_ e) { \
+    inline std::ostream& operator<< (std::ostream &os, const name_ e) { \
         return (os << enum_cast(e)); \
     } \
     \

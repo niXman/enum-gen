@@ -52,7 +52,7 @@ ENUM_GEN_DECLARE_ENUM_CLASS(
 ### Using generated meta-code
 ```cpp
 // range-based for
-for ( const auto &it: enum_info<myenum1>::values ) {
+for ( const auto &it: enum_info<myenum1>{} ) {
     std::cout
     << "name=" << it.name // name of member as const char*
     << ", value=" << static_cast<enum_info<myenum1>::underlying_type>(it.value) // enum member
