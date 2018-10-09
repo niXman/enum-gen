@@ -51,6 +51,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <array>
+#include <ostream>
 
 /****************************************************************************/
 
